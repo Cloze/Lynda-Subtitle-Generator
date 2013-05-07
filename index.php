@@ -3,12 +3,12 @@
  * Lynda Subtitle Generator - PHP application
  * https://github.com/qolami/Lynda-Subtitle-Generator
  * Copyright 2013 Hashem Qolami <hashem@qolami.com>
- * Version 0.9.3
+ * Version 0.9.4
  * Released under the MIT and GPL licenses.
  */
 
 # App version
-$version = '0.9.3';
+$version = '0.9.4';
 
 if (! isset($_GET['url'])) {
 	include 'inc/view.php';
@@ -137,14 +137,30 @@ function process_chapter($e, $path, $chno)
 		$num = $j<10?"0$j":$j;
 		$title = "$num. ".$section->find('a', 0)->plaintext;
 		$rows = $section->find('td.tC');
+		$rows_num = count($rows);
 		$sub = '';
 
-		for ($i = 0; $i < count($rows)-1;) {
+		for ($i = 0; $i < count($rows);) {
 			$start = $rows[$i]->plaintext;
-			$lms   = explode(':', $rows[$i+1]->plaintext);
-			$lsec  = $lms[1] - 1;
-			$lsec  = $lsec<10?"0$lsec":$lsec;
-			$end   = "$lms[0]:$lsec";
+
+			// $lms   = explode(':', $rows[$i+1]->plaintext);
+			// $lsec  = $lms[1] - 1;
+			// $lsec  = $lsec<10?"0$lsec":$lsec;
+			// $end   = "$lms[0]:$lsec";
+
+			// Lynda.com has changed its transcript page structure
+			if ($i == $rows_num - 1) {
+				$lms  = explode(':', $start);
+				$lmin = $lms[0] + 1;
+				$lmin = $lmin<10?"0$lmin":$lmin;
+				$end  = "$lmin:$lms[1]";
+			} else {
+				$lms   = explode(':', $rows[$i+1]->plaintext);
+				$lsec  = $lms[1] - 1;
+				$lsec  = $lsec<10?"0$lsec":$lsec;
+				$end   = "$lms[0]:$lsec";
+			}
+
 			$text  = trim($rows[$i]->next_sibling()->plaintext);
 			$i++;
 			$sub .= "$i".PHP_EOL;
