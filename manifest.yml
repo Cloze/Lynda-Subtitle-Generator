@@ -1,14 +1,14 @@
 ---
 applications:
   .:
-    name: getlyndasub
+    name: lyndasub
     framework:
       name: php
       info:
-        mem: 128M
+        mem: 512M
         description: PHP Application
         exec: 
-    infra: hp
-    url: ${name}.${target-base}
-    mem: 128M
+    infra: eu-aws
+    url: lyndasub.eu01.aws.af.cm
+    mem: 512M
     instances: 1

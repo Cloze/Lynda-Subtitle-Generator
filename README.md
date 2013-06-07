@@ -2,8 +2,6 @@
 ========================
 
 **A simple PHP application to generate SRT subtitles for Lynda.com courses.**
-   
-_Alternative URL Address (http://getlyndasub.hp.af.cm/)_
 
 ##HOW TO USE
 As simple as:
