@@ -3,12 +3,12 @@
  * Lynda Subtitle Generator - PHP application
  * https://github.com/qolami/Lynda-Subtitle-Generator
  * Copyright 2013 Hashem Qolami <hashem@qolami.com>
- * Version 0.9.4
+ * Version 1.0.0-rc.1
  * Released under the MIT and GPL licenses.
  */
 
 # App version
-$version = '0.9.4';
+$version = '1.0.0-rc.1';
 
 if (! isset($_GET['url'])) {
 	include 'inc/view.php';
@@ -140,7 +140,7 @@ function process_chapter($e, $path, $chno)
 		$rows_num = count($rows);
 		$sub = '';
 
-		for ($i = 0; $i < count($rows);) {
+		for ($i = 0; $i < $rows_num;) {
 			$start = $rows[$i]->plaintext;
 
 			// $lms   = explode(':', $rows[$i+1]->plaintext);
@@ -156,12 +156,18 @@ function process_chapter($e, $path, $chno)
 				$end  = "$lmin:$lms[1]";
 			} else {
 				$lms   = explode(':', $rows[$i+1]->plaintext);
-				$lsec  = $lms[1] - 1;
-				$lsec  = $lsec<10?"0$lsec":$lsec;
-				$end   = "$lms[0]:$lsec";
+				if ($lms[1]>0) {
+					$lsec = $lms[1] - 1;
+				} else {
+					$lsec = '59';
+					$lms[0]--; 
+					$lms[0] = $lms[0]<10?"0$lms[0]":$lms[0];
+				}
+				$lsec   = $lsec<10?"0$lsec":$lsec;
+				$end    = "$lms[0]:$lsec";
 			}
 
-			$text  = trim($rows[$i]->next_sibling()->plaintext);
+			$text  = preg_replace("/\s+/", ' ', trim($rows[$i]->next_sibling()->plaintext));
 			$i++;
 			$sub .= "$i".PHP_EOL;
 			$sub .= "00:{$start},000 --> 00:{$end},990".PHP_EOL;
